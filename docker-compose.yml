@@ -1,0 +1,36 @@
+version: '3'
+services:
+  app:
+    image: php-jenkins
+    container_name: php-jenkins
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile
+
+    volumes:
+      - nfsmount:/var/www/
+    networks:
+      - maliin
+  nginx:
+    image: nginx:1.17-alpine
+    container_name: dkr-nginx
+    depends_on:
+      - app
+    ports:
+      - 10080:80
+    volumes:
+      - nfsmount:/var/www
+      - ./docker/nginx:/etc/nginx/conf.d
+    networks:
+      - maliin
+networks:
+  maliin:
+    driver: bridge
+volumes:
+  nfsmount:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
+      device: ":$PWD"
+

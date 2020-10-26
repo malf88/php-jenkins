@@ -1,0 +1,22 @@
+{
+    "name": "malf88/php-jenkins",
+    "description": "Lib para fazer request para o Jenkins API",
+    "type": "library",
+    "require": {
+        "guzzlehttp/guzzle": "^7.2",
+        "nesbot/carbon": "^2.41"
+    },
+    "license": "GPL-3.0-only",
+    "authors": [
+        {
+            "name": "Marco Aurelio Lima Fernandes",
+            "email": "malf88@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "src\\": "src/"
+        }
+    }
+}
