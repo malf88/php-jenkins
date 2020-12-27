@@ -37,7 +37,30 @@ class Jenkins
         $this->jobs = $serverInfo->jobs;
 
     }
+    /**
+     * @return Build
+     * @param string $job
+     * @throws \Exception
+     */
+    public function getLastBuild($job){
+        
+        $job = $this->findJob($job);
 
+        try{
+            $response = $this->request('GET',$job->url.'lastBuild/api/json',[]);
+            $responseJson = json_decode($response->getBody()->getContents());
+        }catch(\Exception $e){
+            throw $e;
+        }
+        
+        return new Build(
+                            $responseJson->id,
+                            $responseJson->result,
+                            $responseJson->timestamp,
+                            $responseJson->url,
+                            $this
+                        );
+    }
     /**
      * @param $job
      * @return BuildList
@@ -45,7 +68,7 @@ class Jenkins
      */
     public function getBuildList($job){
         $job = $this->findJob($job);
-        $response = $this->request('GET',$job->url.'/api/json?tree=builds[*]',[]);
+        $response = $this->request('GET',$job->url.'api/json?tree=builds[*]',[]);
 
         $responseJson = json_decode($response->getBody()->getContents());
 
@@ -93,13 +116,13 @@ class Jenkins
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function request($method = 'GET',$action,$params){
+        
         $request = $this->client->request($method, $action, array(
             "auth" => [$this->username, $this->usertoken],
-            "headers" => array(
-                //$crumb->getRequestField(), $crumb->getCrumb()
-            ),
+            "headers" => [],
             "form_params" => $params
         ));
+        //var_dump($request->getStatusCode(),$action);
         return $request;
     }
 

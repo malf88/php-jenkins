@@ -29,12 +29,17 @@ class Build
     }
 
     public function getURLPromotion(){
-        return $this->url . '/promotion/forcePromotion';
+        return $this->url . 'promotion/forcePromotion';
     }
 
     public function promotion($name){
-        $response = $this->jenkins->request('GET',$this->getURLPromotion(). '?name='.$name,[]);
-
+        
+        try{
+            //print_r($this->getURLPromotion(). '?name='.$name);
+            $response = $this->jenkins->request('GET',$this->getURLPromotion(). '?name='.$name,[]);
+        }catch(\Exception $e){
+            throw new \Exception('Não foi encontrado o promotion');
+        }
         return $this->jenkins->verifyStatus($response);
     }
 
